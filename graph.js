@@ -1,6 +1,6 @@
 const daysInYear = 25;
 const trials = 1000;
-const scalex = 100;
+const scalex = 200;
 
 // generate a set for a given size of group
 // and then return the number of unique birthdays
@@ -35,16 +35,16 @@ function scaffold() {
     .selectAll('rect')
     .data(blanks).enter()
     .append('rect')
-    .attr('height', 15)
+    .attr('height', 30)
     .attr('x', 0)
-    .attr('y', d => d * 15)
+    .attr('y', d => d * 30)
     .attr('fill', 'black');
 
   d3.select('#graph')
     .selectAll('text')
     .data(blanks).enter()
     .append('text')
-    .attr('y', d => d * 15 + 15)
+    .attr('y', d => d * 30 + 20)
     .attr('fill', 'black');
 
   redraw();
@@ -59,9 +59,9 @@ function redraw() {
 
   d3.selectAll('text')
     .text(d => observations[d].value)
-    .attr('x', d => observations[d].value * scalex + 15)
+    .attr('x', d => observations[d].value * scalex + 30)
     .attr('fill', d => observations[d].value > .5 ? 'green' : 'red');
 }
 
 scaffold();
-setInterval(redraw, 100);
+setInterval(redraw, 500);
