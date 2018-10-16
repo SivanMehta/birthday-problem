@@ -35,7 +35,8 @@ function scaffold() {
     .selectAll('rect')
     .data(blanks).enter()
     .append('rect')
-    .attr('height', d => 15)
+    .attr('height', 15)
+    .attr('x', 0)
     .attr('y', d => d * 15)
     .attr('fill', 'black');
 
@@ -53,11 +54,13 @@ function redraw() {
   const observations = generateData();
 
   d3.selectAll('rect')
-    .attr('width', d => observations[d].value * scalex);
+    .attr('width', d => observations[d].value * scalex)
+    .attr('fill', d => observations[d].value > .5 ? 'green' : 'red');
 
   d3.selectAll('text')
     .text(d => observations[d].value)
     .attr('x', d => observations[d].value * scalex + 15)
+    .attr('fill', d => observations[d].value > .5 ? 'green' : 'red');
 }
 
 scaffold();
