@@ -1,12 +1,11 @@
 const daysInYear = 25;
-const trials = 1000;
 const scalex = 200;
 
-const store = Array(daysInYear).fill([0]);
+const store = Array(daysInYear).fill(0).map(() => [0]);
 
 // generate a set for a given size of group
 // and then return the number of unique birthdays
-function singleTrial(groupSize) {
+function randomGroup(groupSize) {
   return Array(groupSize)
     .fill(0)
     .reduce((acc) => acc.add(Math.floor(Math.random() * daysInYear)), new Set())
@@ -15,34 +14,41 @@ function singleTrial(groupSize) {
 
 // Given a certain number of trails, generate n trials for a given group size
 // and find the proportion of which had people with unique birthdays
-function singleObservation(n, groupSize) {
-  const contained = Array(n)
-    .fill(0)
-    .map(() => singleTrial(groupSize))
-    .filter(uniqueDays => uniqueDays !== groupSize)
-
-  return contained.length / trials;
+function singleObservation(groupSize) {
+  return randomGroup(groupSize) < groupSize ? 1 : 0;
 }
 
-function generateData() {
+function singleTrial() {
   return Array(daysInYear)
     .fill(0)
-    .map((_, i) => ({ value: singleObservation(trials, i), idx: i}))
+    .map((_, i) => ({ value: singleObservation(i), idx: i}));
 }
 
-function redrawOne() {
-  const observations = generateData();
+function reduceStore(value) {
+  return value.reduce((a, b) => a + b) / value.length;
+}
+
+function redraw() {
+  const observations = singleTrial();
+  observations.forEach((obs, i) => {
+    store[i].push(obs.value)
+  });
 
   d3.select('#single')
     .selectAll('rect')
-    .attr('width', d => observations[d].value * scalex)
+    .attr('width', d => observations[d].value * scalex / 20)
     .attr('fill', d => observations[d].value > .5 ? 'green' : 'red');
 
-  d3.select('#single')
+  d3.select('#overall')
+    .selectAll('rect')
+    .attr('width', d => reduceStore(store[d]) * scalex)
+    .attr('fill', d => reduceStore(store[d]) > .5 ? 'green' : 'red');
+
+  d3.select('#overall')
     .selectAll('text')
-    .text(d => observations[d].value)
-    .attr('x', d => observations[d].value * scalex + 30)
-    .attr('fill', d => observations[d].value > .5 ? 'green' : 'red');
+    .text(d => Math.round(reduceStore(store[d]) * 100) / 100  )
+    .attr('x', d => reduceStore(store[d]) * scalex + 30)
+    .attr('fill', d => reduceStore(store[d]) > .5 ? 'green' : 'red');
 }
 
 function scaffold(selector) {
@@ -65,4 +71,4 @@ function scaffold(selector) {
 
 scaffold('#single');
 scaffold('#overall');
-setInterval(redrawOne, 500);
+setInterval(redraw, 100);
