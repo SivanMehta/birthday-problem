@@ -4,14 +4,19 @@
   <title>Birthday Problem</title>
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <style type="text/css">
-    rect {
-      transition: .5s;
+    #overall rect {
+      transition: .1s;
+    }
+
+    #overall {
+      position: absolute;
     }
 
   </style>
 </head>
 <body>
-  <svg width="300" height="750" id='graph' />
+  <svg width="10" height="750" id='single' />
+  <svg width="300" height="750" id='overall' />
   <script src='./graph.js'></script>
 </body>
 </html>
